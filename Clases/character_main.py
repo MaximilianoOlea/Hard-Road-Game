@@ -19,16 +19,17 @@ class Pingu(Character):
 
         #Construccion:
         self.score = 0
-        self.count_life = 1
         self.count_jump = 2
         self.count_projectile = 5
-        self.is_alive = True
         self.limit_jumps = 1
 
+        #Disparo
         self.last_shot_time = 0
-        self.time_reload = 1
+        self.time_reload = 0.7
+
+
         self.count_steps = 0
-        
+
     def check_collision_enemy(self,enemies,pos_impact):
         if  self.sides["bottom"].colliderect(enemies.sides["top"]):
             enemies.kill()
@@ -80,15 +81,16 @@ class Pingu(Character):
 
         self.jump_draw(screen)
 
-    def shoot_projectile_pingu(self, sound, pos_x, pos_y,direction_projectile:str,sprites):
+    def shoot_projectile_pingu(self, sound, pos_x, pos_y,direction_projectile:str,sprites_projectiles,all_sprites):
         current_time = time.time() # Obtener el tiempo actual en segundos
         
         # Si desde el ultimo tiro paso 1 segundo habilito a que tire de nuevo
-        if current_time - self.last_shot_time >= 0.5 and self.count_projectile > 0:
+        if current_time - self.last_shot_time >= self.time_reload and self.count_projectile > 0:
             #Actualizar ultimo tiro
             self.last_shot_time = current_time  
-            un_projectile = Projectile(diccionario_animaciones_projectile_pingu, "derecha", (SIZE_PROJECTILE), (pos_x, pos_y), 15,direction_projectile)
-            sprites.add(un_projectile)
+            un_projectile = Projectile(diccionario_animaciones_projectile_pingu, "derecha", (SIZE_PROJECTILE), (pos_x, pos_y), 12,direction_projectile)
+            sprites_projectiles.add(un_projectile)
+            all_sprites.add(un_projectile)
             self.count_projectile -= 1
             if self.count_projectile == 0:
                 print ("Se acabo los tiros")

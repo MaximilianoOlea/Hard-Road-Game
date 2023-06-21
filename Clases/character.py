@@ -21,7 +21,7 @@ class Character(Object_game):
         self.is_looking = is_looking
         self.count_life = count_life
         self.is_doing = "quieto"
-
+        self.is_alive = True
     def check_collision_floor(self,floor:dict):
         """_summary_
 

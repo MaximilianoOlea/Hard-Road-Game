@@ -37,7 +37,11 @@ class Game:
         self.background = pygame.image.load("assets\\backgrounds\grass.png").convert()
         self.background = pygame.transform.scale(self.background, (WIDTH, HEIGHT))
         
+        #Sprites
+        self.all_sprites = pygame.sprite.Group()
         self.pingu = Pingu()
+        self.projectiles_pingu = pygame.sprite.Group()#Se crean cuando dispara
+        self.all_sprites.add(self.pingu)
 
         #Piso
         self.piso = pygame.Rect(0,0,WIDTH,20)
@@ -114,7 +118,9 @@ class Game:
                 elif evento.key == pygame.K_j or evento.key == pygame.K_z:
                     if not self.pause:
                         self.pingu.is_doing = "dispara"              
-                        print("dispara")
+                        self.pingu.shoot_projectile_pingu(
+                        rf"assets\sounds\pingu\proyectile.mp3",self.pingu.sides["main"][0],self.pingu.sides["main"][1],
+                        self.pingu.is_looking,self.projectiles_pingu,self.all_sprites) 
 
         if not self.pause:
             self.controller_movement()
@@ -137,20 +143,24 @@ class Game:
         self.screen.blit(background,(ORIGIN))   
 
         if not self.pause:
-            self.pingu.update()
-            self.pingu.draw(self.screen)
+            if len(self.projectiles_pingu)>0:
+                for projectile in self.projectiles_pingu:
+                    projectile.draw(self.screen)
+                    projectile.update()
+                    projectile.draw_rectangles(self.screen,"Orange",3)
+            # self.pingu.update()
+            # self.pingu.draw(self.screen)
+            self.all_sprites.update()
+            self.all_sprites.draw(self.screen)
             self.pingu.check_collision_floor(floor)
 
-        # PROYECTIL
+        
+        #MODO ADMIN:
+        self.pingu.draw_rectangles(self.screen,"Green",3)
+        if get_mode():
+            for lado in self.lados_piso:
+                pygame.draw.rect(self.screen,"Yellow",self.lados_piso[lado],3)
 
-
-
-        # if get_mode():
-        #     for lado in self.pingu.sides:
-        #         pygame.draw.rect(self.screen,"Blue",self.pingu.sides[lado],3)
-        #     for lado in self.lados_piso:
-        #         pygame.draw.rect(self.screen,"Yellow",self.lados_piso[lado],3)
-    
         pygame.display.flip()
 
 

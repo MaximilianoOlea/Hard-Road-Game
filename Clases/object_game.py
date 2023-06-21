@@ -4,9 +4,10 @@ import time
 
 from tools import *
 
+from Configuraciones.mode import get_mode
 
 class Object_game (pygame.sprite.Sprite):
-    def __init__(self, animations: list, key_animation:str, size_image: tuple, initial_position: tuple):
+    def __init__(self, animations: list, key_animation:str, size_image: tuple, initial_position: tuple,key_is_doing):
         """_summary_
 
         Args:
@@ -19,15 +20,24 @@ class Object_game (pygame.sprite.Sprite):
 
         self.animations = animations
         self.speed_animation = 12
-        
+        self.key_is_doing = key_is_doing
+        self.index = 0
+        self.image = self.animations[key_is_doing][self.index]
+        # self.image = pygame.image.load(rf"assets\pingu\camina\0.png").convert_alpha()
+        # self.image = pygame.transform.scale(self.image, size_image)
+        # self.rect = pygame.Rect(self.image.get_rect())
+        # self.rect.x = initial_position[0]
+        # self.rect.y = initial_position[1]
+
         # Será el rect principal
         resize_animations(self.animations, size_image)
 
-        rectangle = pygame.Rect(self.animations[key_animation][0].get_rect())
-        rectangle.x = initial_position[0]
-        rectangle.y = initial_position[1]
+        self.rect = pygame.Rect(self.animations[key_animation][0].get_rect())
+        self.rect.x = initial_position[0]
+        self.rect.y = initial_position[1]
 
-        self.sides = get_rectangles(rectangle)
+        self.sides = get_rectangles(self.rect)
+        self.count_steps = 0
 
     def draw_rectangles(self, screen: pygame.Surface, colour: str | tuple, size: int): #G
         """_summary_
@@ -37,11 +47,12 @@ class Object_game (pygame.sprite.Sprite):
             colour (str | tuple): nombre o valor numerico del color
             size (int): Tamaño del dibujo de los rectangulos
         """
-        for side in self.sides:
-            pygame.draw.rect(screen, colour, self.sides[side], size)
+        if get_mode():
+            for side in self.sides:
+                pygame.draw.rect(screen, colour, self.sides[side], size)
 
-    def draw (self,screen,key_is_doing:str):
-        self.animate_motion(screen,key_is_doing,self.speed_animation)
+    # def draw (self,screen,key_is_doing:str):
+    #     self.animate_motion(screen,key_is_doing,self.speed_animation)
 
     def move(self, speed: int, lateral_movement: bool = True):  # 
         """_summary_
@@ -51,9 +62,11 @@ class Object_game (pygame.sprite.Sprite):
             lateral_movement (bool, optional): True = Se mueve de forma lateral | False = Se mueve de forma vertical
         """
         if lateral_movement:
+            self.rect.x += speed
             for lado in self.sides:
                 self.sides[lado].x += speed
         else:
+            self.rect.y += speed
             for lado in self.sides:
                 self.sides[lado].y += speed
             self.movement_y = speed

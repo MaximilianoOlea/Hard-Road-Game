@@ -2,14 +2,6 @@ from .config_assets import *
 from .charge_assets import *
 
 
-diccionario_movimientos = {
-    "derecha":False,
-    "izquierda":False,
-    "salto":False,
-    "quieto":True}
-
-
-
 #protagonista:
 posicion_inicial = (CENTER_X, CENTER_Y)
 diccionario_animaciones_pingu = {}

@@ -30,7 +30,7 @@ class Projectile (Item):
         pass
 
     def draw(self,screen):
-        self.animate_motion(screen,"derecha",12)
+        self.animate_motion(screen,"derecha")
 
     def check_objective (self,a_objective:Character):
         
@@ -43,6 +43,7 @@ class Projectile (Item):
                 if (a_objective.count_life < 1):
                     a_objective.kill()
                 self.collide = True
+
     def update(self):
         if self.direction_projectile == "derecha":
             self.move(self.speed)
